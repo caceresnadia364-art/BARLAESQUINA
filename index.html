@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bar La Esquina - Sistema de Gestión</title>
+
+    <!-- Estilos y Configuración PWA -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#F2994A" />
+    <link rel="apple-touch-icon" href="./icono-192.png" />
+  </head>
+  <body>
+    <header id="app-header">
+      <h1>Bar La Esquina</h1>
+
+      <nav id="main-nav" aria-label="Navegación principal">
+        <ul>
+          <li>
+            <button type="button" id="nav-salon" data-section="seccion-salon">
+              Salón
+            </button>
+          </li>
+          <li>
+            <button type="button" id="nav-carta" data-section="seccion-carta">
+              Carta
+            </button>
+          </li>
+          <li>
+            <button type="button" id="nav-caja" data-section="seccion-caja">
+              Caja del día
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <div id="data-actions">
+        <button type="button" id="btn-exportar">Exportar</button>
+        <button type="button" id="btn-importar">Importar</button>
+        <input type="file" id="input-importar" accept=".json" hidden />
+      </div>
+    </header>
+
+    <main id="app-main">
+      <!-- SECCIÓN SALÓN -->
+      <section id="seccion-salon" aria-labelledby="titulo-salon">
+        <h2 id="titulo-salon">Salón</h2>
+
+        <div id="salon-layout">
+          <div id="grilla-mesas" aria-label="Mesas del salón">
+            <!-- Las tarjetas de las mesas se renderizarán dinámicamente aquí -->
+          </div>
+
+          <aside id="panel-pedido" aria-labelledby="titulo-pedido">
+            <h3 id="titulo-pedido">Pedido de la mesa</h3>
+            <p id="mesa-seleccionada-info">Ninguna mesa seleccionada</p>
+
+            <ul id="lista-items-pedido">
+              <!-- Los ítems del pedido de la mesa elegida irán aquí -->
+            </ul>
+
+            <div id="pedido-footer">
+              <p>Total: <strong id="total-pedido">$0.00</strong></p>
+              <button type="button" id="btn-cerrar-mesa" disabled>
+                Cerrar cuenta
+              </button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- SECCIÓN CARTA -->
+      <section id="seccion-carta" aria-labelledby="titulo-carta" hidden>
+        <h2 id="titulo-carta">Carta</h2>
+
+        <form id="form-producto">
+          <fieldset>
+            <legend>Nuevo / Editar Producto</legend>
+
+            <div>
+              <label for="prod-nombre">Nombre:</label>
+              <input type="text" id="prod-nombre" name="nombre" required />
+            </div>
+
+            <div>
+              <label for="prod-categoria">Categoría:</label>
+              <select id="prod-categoria" name="categoria" required>
+                <option value="">Seleccionar categoría...</option>
+                <option value="bebidas">Bebidas</option>
+                <option value="cafeteria">Cafetería</option>
+                <option value="comidas">Comidas</option>
+                <option value="postres">Postres</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="prod-precio">Precio:</label>
+              <input
+                type="number"
+                id="prod-precio"
+                name="precio"
+                step="0.01"
+                min="0"
+                inputmode="decimal"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="prod-disponible">
+                <input
+                  type="checkbox"
+                  id="prod-disponible"
+                  name="disponible"
+                  checked
+                />
+                Disponible
+              </label>
+            </div>
+
+            <button type="submit" id="btn-guardar-producto">
+              Guardar producto
+            </button>
+          </fieldset>
+        </form>
+
+        <div id="contenedor-lista-carta">
+          <h3>Productos en Carta</h3>
+          <ul id="lista-productos">
+            <!-- La lista de productos de la carta se cargará dinámicamente aquí -->
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECCIÓN CAJA DEL DÍA -->
+      <section id="seccion-caja" aria-labelledby="titulo-caja" hidden>
+        <h2 id="titulo-caja">Caja del día</h2>
+
+        <table id="tabla-caja">
+          <thead>
+            <tr>
+              <th scope="col">Hora</th>
+              <th scope="col">Mesa</th>
+              <th scope="col">Detalle</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-caja">
+            <!-- Los movimientos cerrados del día se insertarán aquí -->
+          </tbody>
+          <tfoot>
+            <tr>
+              <th scope="row" colspan="3">Total recaudado</th>
+              <td id="total-caja-dia">$0.00</td>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+    </main>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

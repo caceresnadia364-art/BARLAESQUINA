@@ -1,0 +1,563 @@
+/* ==========================================================================
+   1. IMPORTACIÓN DE FUENTES Y VARIABLES GLOBALES (:root)
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap');
+
+:root {
+  /* Paleta principal */
+  --color-primario: #F2994A;
+  --color-primario-hover: #E08230;
+  --color-marron-cafe: #3E2723;
+  --color-marron-suave: #6D4C41;
+
+  /* Fondos y superficies */
+  --bg-pagina: #FAF8F5;        /* Fondo claro cálido */
+  --bg-crema: #FFFDF9;         /* Fondo crema para tarjetas y contenedores */
+  --bg-crema-oscuro: #F3ECE1;  /* Fondo para encabezados de tabla o detalles */
+
+  /* Estados de las mesas */
+  --mesa-libre-bg: #E8F5E9;
+  --mesa-libre-borde: #4CAF50;
+  --mesa-libre-texto: #1B5E20;
+
+  --mesa-ocupada-bg: #FFF3E0;
+  --mesa-ocupada-borde: #F2994A;
+  --mesa-ocupada-texto: #E65100;
+
+  /* Textos, bordes y sombras */
+  --texto-principal: #2C221E;
+  --texto-secundario: #6E625D;
+  --borde-suave: #E6DFD5;
+  --sombra-tarjeta: 0 4px 12px rgba(62, 39, 35, 0.08);
+  --sombra-hover: 0 6px 16px rgba(62, 39, 35, 0.14);
+
+  /* Tipografías */
+  --fuente-titulos: 'Poppins', system-ui, -apple-system, sans-serif;
+  --fuente-texto: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Bordes */
+  --radio-borde: 12px;
+}
+
+/* ==========================================================================
+   2. RESET BÁSICO Y ESTILOS GENERALES
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+body {
+  font-family: var(--fuente-texto);
+  background-color: var(--bg-pagina);
+  color: var(--texto-principal);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, legend {
+  font-family: var(--fuente-titulos);
+  color: var(--color-marron-cafe);
+}
+
+h2 {
+  font-size: 1.6rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 2px solid var(--borde-suave);
+  padding-bottom: 0.5rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Regla estricta para mostrar solo una sección a la vez */
+section[hidden] {
+  display: none !important;
+}
+
+/* ==========================================================================
+   3. ENCABEZADO, NAVEGACIÓN E ÍCONOS CON EMOJIS
+   ========================================================================== */
+#app-header {
+  background-color: var(--bg-crema);
+  border-bottom: 1px solid var(--borde-suave);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 2px 8px rgba(62, 39, 35, 0.05);
+}
+
+#app-header h1 {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#app-header h1::before {
+  content: "☕";
+}
+
+#main-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+#data-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Emojis automáticos en navegación y acciones */
+#nav-salon::before { content: "🪑 "; }
+#nav-carta::before { content: "📋 "; }
+#nav-caja::before { content: "💰 "; }
+#btn-exportar::before { content: "📤 "; }
+#btn-importar::before { content: "📥 "; }
+#btn-guardar-producto::before { content: "💾 "; }
+#btn-cerrar-mesa::before { content: "✅ "; }
+
+/* ==========================================================================
+   4. BOTONES, CAMPOS TÁCTILES (MÍNIMO 44PX) Y EFECTOS HOVER
+   ========================================================================== */
+button,
+input:not([type="checkbox"]):not([type="file"]),
+select {
+  min-height: 44px;
+}
+
+button {
+  font-family: var(--fuente-texto);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.6rem 1.1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: var(--color-primario);
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+  background-color: var(--color-primario-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-hover);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+button:disabled {
+  background-color: #D7CCC8;
+  color: #8D6E63;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Botones secundarios (Exportar / Importar / Navegación) */
+#data-actions button,
+#main-nav button {
+  background-color: var(--bg-crema-oscuro);
+  color: var(--color-marron-cafe);
+  border: 1px solid var(--borde-suave);
+}
+
+#data-actions button:hover,
+#main-nav button:hover,
+#main-nav button.activo {
+  background-color: var(--color-primario);
+  color: #FFFFFF;
+  border-color: var(--color-primario);
+}
+
+/* ==========================================================================
+   5. CONTENEDOR PRINCIPAL Y ESTRUCTURA MOBILE FIRST (1 COLUMNA)
+   ========================================================================== */
+#app-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem;
+}
+
+/* En móvil, tanto Salón como Carta apilan sus bloques en 1 columna */
+#salon-layout,
+#seccion-carta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+#seccion-carta h2 {
+  grid-column: 1 / -1;
+}
+
+/* ==========================================================================
+   6. SECCIÓN SALÓN: GRILLA DE MESAS Y PANEL DE PEDIDO
+   ========================================================================== */
+#grilla-mesas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+  gap: 1rem;
+}
+
+/* Tarjetas cuadradas grandes para las mesas */
+#grilla-mesas > * {
+  aspect-ratio: 1 / 1;
+  background-color: var(--bg-crema);
+  border: 2px solid var(--borde-suave);
+  border-radius: var(--radio-borde);
+  box-shadow: var(--sombra-tarjeta);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+  cursor: pointer;
+  font-family: var(--fuente-titulos);
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#grilla-mesas > *:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra-hover);
+}
+
+/* Estado Libre (Verde) */
+#grilla-mesas > .libre,
+#grilla-mesas > [data-estado="libre"] {
+  background-color: var(--mesa-libre-bg);
+  border-color: var(--mesa-libre-borde);
+  color: var(--mesa-libre-texto);
+}
+
+/* Estado Ocupada (Naranja) */
+#grilla-mesas > .ocupada,
+#grilla-mesas > [data-estado="ocupada"] {
+  background-color: var(--mesa-ocupada-bg);
+  border-color: var(--mesa-ocupada-borde);
+  color: var(--mesa-ocupada-texto);
+}
+
+/* Mesa seleccionada actualmente */
+#grilla-mesas > .seleccionada {
+  outline: 3px solid var(--color-marron-cafe);
+  outline-offset: 2px;
+}
+
+/* Panel lateral del pedido como tarjeta */
+#panel-pedido {
+  background-color: var(--bg-crema);
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio-borde);
+  padding: 1.5rem;
+  box-shadow: var(--sombra-tarjeta);
+}
+
+#mesa-seleccionada-info {
+  font-size: 0.95rem;
+  color: var(--texto-secundario);
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed var(--borde-suave);
+}
+
+.controles-pedido {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.controles-pedido select {
+  flex: 1 1 180px;
+}
+
+.controles-pedido input[type="number"] {
+  width: 75px;
+  text-align: center;
+}
+
+#lista-items-pedido {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.item-pedido-controles {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.item-pedido-controles button {
+  padding: 0.4rem 0.65rem;
+  min-width: 44px;
+}
+
+#pedido-footer {
+  border-top: 2px solid var(--borde-suave);
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+#pedido-footer p {
+  font-size: 1.15rem;
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-marron-cafe);
+}
+
+/* ==========================================================================
+   7. SECCIÓN CARTA: FORMULARIO Y LISTA COMO TARJETAS
+   ========================================================================== */
+#form-producto {
+  background-color: var(--bg-crema);
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio-borde);
+  padding: 1.5rem;
+  box-shadow: var(--sombra-tarjeta);
+}
+
+#form-producto fieldset {
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#form-producto legend {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+#form-producto div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+#form-producto label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--color-marron-suave);
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  font-family: var(--fuente-texto);
+  font-size: 1rem; /* Evita zoom automático en iOS al enfocar */
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--borde-suave);
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  color: var(--texto-principal);
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 3px rgba(242, 153, 74, 0.2);
+}
+
+/* Checkbox alineado horizontalmente */
+#form-producto label:has(input[type="checkbox"]) {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+#form-producto input[type="checkbox"] {
+  accent-color: var(--color-primario);
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Elementos de las listas (Carta y Pedido) como tarjetas individuales */
+#lista-productos,
+.sublista-productos,
+#lista-items-pedido {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.categoria-grupo-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.categoria-titulo {
+  margin-top: 0.5rem;
+  color: var(--color-marron-suave);
+}
+
+.producto-card,
+#lista-items-pedido li {
+  background-color: var(--bg-crema);
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio-borde);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--sombra-tarjeta);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.producto-acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ==========================================================================
+   8. SECCIÓN CAJA DEL DÍA: TABLA ESTILIZADA
+   ========================================================================== */
+#seccion-caja {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.resumen-caja-tarjeta {
+  background-color: var(--bg-crema);
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio-borde);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--sombra-tarjeta);
+}
+
+.subtotales-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+#tabla-caja {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-crema);
+  border-radius: var(--radio-borde);
+  overflow: hidden;
+  box-shadow: var(--sombra-tarjeta);
+}
+
+#tabla-caja th,
+#tabla-caja td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+#tabla-caja thead {
+  background-color: var(--color-marron-cafe);
+  color: #FFFFFF;
+  font-family: var(--fuente-titulos);
+  font-size: 0.9rem;
+}
+
+#tabla-caja tbody tr:hover {
+  background-color: var(--bg-crema-oscuro);
+}
+
+#tabla-caja tfoot {
+  background-color: var(--bg-crema-oscuro);
+  font-weight: 700;
+  color: var(--color-marron-cafe);
+}
+
+/* ==========================================================================
+   9. MENÚ INFERIOR FIJO EN PANTALLAS MENORES A 600PX
+   ========================================================================== */
+@media (max-width: 599px) {
+  body {
+    padding-bottom: 5.5rem;
+  }
+
+  #main-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--bg-crema);
+    border-top: 1px solid var(--borde-suave);
+    padding: 0.5rem 0.75rem;
+    box-shadow: 0 -4px 16px rgba(62, 39, 35, 0.12);
+    z-index: 1000;
+  }
+
+  #main-nav ul {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  #main-nav li {
+    flex: 1;
+  }
+
+  #main-nav button {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.5rem 0.4rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* ==========================================================================
+   10. DISEÑO RESPONSIVE DESDE 768PX (2 COLUMNAS)
+   ========================================================================== */
+@media (min-width: 768px) {
+  #app-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+  }
+
+  /* Salón: Grilla de mesas a la izquierda (1.5fr) y Panel de pedido a la derecha (1fr) */
+  #salon-layout {
+    grid-template-columns: 1.5fr 1fr;
+  }
+
+  /* Carta: Formulario a la izquierda (1fr) y Lista de productos a la derecha (1.4fr) */
+  #seccion-carta {
+    grid-template-columns: 1fr 1.4fr;
+  }
+}
