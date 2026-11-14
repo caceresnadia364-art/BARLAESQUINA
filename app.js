@@ -1,5 +1,5 @@
 /* ==========================================================================
-   REGISTRO DE IA: Sistema completo Bar La Esquina (Salón, Pedidos, Carta, Caja, Export/Import, PWA SW)
+   REGISTRO DE IA: Sistema completo Bar La Esquina (Salón, Pedidos, Carta, Caja, Export/Import, PWA SW, Aviso Offline y Share API)
    ========================================================================== */
 
 const STORAGE_KEY = 'bar-datos';
@@ -551,21 +551,41 @@ function renderizarCaja() {
 }
 
 /* ==========================================================================
-   EXPORTAR E IMPORTAR DATOS (BLOB, bar.json Y VALIDACIÓN)
+   EXPORTAR E IMPORTAR DATOS (CON SUPORTE PARA navigator.share Y BLOB)
    ========================================================================== */
-function exportarDatos() {
+async function exportarDatos() {
   const datos = { productos, mesas, pedidos };
   const jsonString = JSON.stringify(datos, null, 2);
   const blob = new Blob([jsonString], { type: 'application/json' });
+  const archivo = new File([blob], 'bar.json', { type: 'application/json' });
+
+  // Verificar si el navegador soporta Web Share API y puede compartir archivos
+  if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
+    try {
+      await navigator.share({
+        title: 'Copia de seguridad - Bar La Esquina',
+        text: 'Archivo JSON de respaldo del sistema de gestión.',
+        files: [archivo]
+      });
+      return; // Salir si se compartió exitosamente
+    } catch (error) {
+      // Si el usuario cancela el menú de compartir, no hacemos nada más
+      if (error.name !== 'AbortError') {
+        console.warn('Error al usar navigator.share, procediendo con descarga tradicional:', error);
+      } else {
+        return;
+      }
+    }
+  }
+
+  // Respaldo: Descarga tradicional como archivo si no se puede compartir
   const url = URL.createObjectURL(blob);
-  
   const downloadAnchor = document.createElement('a');
   downloadAnchor.href = url;
   downloadAnchor.download = 'bar.json';
   document.body.appendChild(downloadAnchor);
   downloadAnchor.click();
   downloadAnchor.remove();
-  
   URL.revokeObjectURL(url);
 }
 
@@ -621,10 +641,46 @@ function importarDatos(event) {
 }
 
 /* ==========================================================================
+   AVISO DISCRETO DE CONECTIVIDAD (ONLINE / OFFLINE)
+   ========================================================================== */
+function inicializarAvisoConectividad() {
+  // Crear el elemento del banner si no existe
+  let banner = document.getElementById('banner-offline');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'banner-offline';
+    banner.className = 'banner-offline-oculto';
+    banner.textContent = 'Sin conexión: tus datos se siguen guardando en este celular';
+    
+    // Insertarlo al inicio del body para que quede arriba de todo
+    document.body.prepend(banner);
+  }
+
+  // Función para actualizar la visibilidad según navigator.onLine
+  function actualizarEstadoConexion() {
+    if (!navigator.onLine) {
+      banner.classList.remove('banner-offline-oculto');
+      banner.classList.add('banner-offline-visible');
+    } else {
+      banner.classList.remove('banner-offline-visible');
+      banner.classList.add('banner-offline-oculto');
+    }
+  }
+
+  // Escuchar eventos globales
+  window.addEventListener('online', actualizarEstadoConexion);
+  window.addEventListener('offline', actualizarEstadoConexion);
+
+  // Comprobar estado inicial al cargar
+  actualizarEstadoConexion();
+}
+
+/* ==========================================================================
    INICIALIZACIÓN DE EVENTOS (DOM CONTENT LOADED)
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
   cargarDatos();
+  inicializarAvisoConectividad();
 
   // Navegación
   const botonesNav = document.querySelectorAll('#main-nav button');
@@ -775,27 +831,3 @@ document.addEventListener('DOMContentLoaded', () => {
   // Exportar / Importar
   const btnExportar = document.getElementById('btn-exportar');
   const btnImportar = document.getElementById('btn-importar');
-  const inputImportar = document.getElementById('input-importar');
-
-  if (btnExportar) {
-    btnExportar.addEventListener('click', exportarDatos);
-  }
-
-  if (btnImportar && inputImportar) {
-    btnImportar.addEventListener('click', () => inputImportar.click());
-    inputImportar.addEventListener('change', importarDatos);
-  }
-});
-
-// Registro del Service Worker para PWA (si es compatible)
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then((registration) => {
-        console.log('Service Worker registrado correctamente con alcance:', registration.scope);
-      })
-      .catch((error) => {
-        console.error('Error al registrar el Service Worker:', error);
-      });
-  });
-}
