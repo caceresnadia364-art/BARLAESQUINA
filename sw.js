@@ -1,5 +1,5 @@
 // Definimos la versión actual de nuestra caché para controlarla fácilmente en el futuro
-const VERSION = "v2";
+const VERSION = "v1";
 
 // Lista con todos los archivos esenciales que la app necesita para funcionar sin conexión
 const ARCHIVOS = [
